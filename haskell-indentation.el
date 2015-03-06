@@ -255,14 +255,14 @@ Handles bird style literate haskell too."
 Or returns the last indentation if there are no bigger ones and
 NOFAIL is non-nil."
   (when (null indentations) (error "haskell-indentation-next-indentation called with empty list"))
-  (or (find-if #'(lambda (i) (> i col)) indentations)
+  (or (cl-find-if #'(lambda (i) (> i col)) indentations)
       (when nofail (car (last indentations)))))
 
 (defun haskell-indentation-previous-indentation (col indentations &optional nofail)
   "Find the rightmost indentation which is less than COL."
   (when (null indentations) (error "haskell-indentation-previous-indentation called with empty list"))
   (let ((rev (reverse indentations)))
-    (or (find-if #'(lambda (i) (< i col)) rev)
+    (or (cl-find-if #'(lambda (i) (< i col)) rev)
         (when nofail (car rev)))))
 
 (defun haskell-indentation-indent-line ()
@@ -397,9 +397,9 @@ the current buffer."
                               (haskell-indentation-find-indentations-safe)
                             (parse-error nil))))
                ;; indentations that are easy to show
-               (inds (remove-if (lambda (i) (>= i columns)) allinds))
+               (inds (cl-remove-if (lambda (i) (>= i columns)) allinds))
                ;; tricky indentations, that are after the current EOL
-               (overinds (member-if (lambda (i) (>= i columns)) allinds))
+               (overinds (cl-member-if (lambda (i) (>= i columns)) allinds))
                ;; +1: leave space for an extra overlay to show overinds
                (overlays (haskell-indentation-init-overlays (+ 1 (length inds)))))
           (while inds
